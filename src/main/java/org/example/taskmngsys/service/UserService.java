@@ -1,11 +1,15 @@
 package org.example.taskmngsys.service;
 
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.example.taskmngsys.entity.User;
+import org.example.taskmngsys.exception.EmailExistException;
+import org.example.taskmngsys.exception.EmailNotExistException;
+import org.example.taskmngsys.exception.UserExistException;
+import org.example.taskmngsys.exception.UserNotFoundException;
 import org.example.taskmngsys.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 
@@ -22,10 +26,10 @@ public class UserService {
 
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+            throw new UserExistException(user.getUsername());
         }
         if (repository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+            throw new EmailExistException(user.getEmail());
         }
 
         return save(user);
@@ -33,7 +37,7 @@ public class UserService {
 
     public User getByUsername(String username) {
         return repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UserNotFoundException(username));
 
     }
 
@@ -48,4 +52,8 @@ public class UserService {
     }
 
 
+    public User getByEmail(@Email(message = "Email адрес должен быть в формате user@example.com") String email) {
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new EmailNotExistException(email));
+    }
 }

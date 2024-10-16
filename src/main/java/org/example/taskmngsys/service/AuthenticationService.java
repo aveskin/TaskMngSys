@@ -5,6 +5,7 @@ import org.example.taskmngsys.dto.security.JwtAuthenticationResponse;
 import org.example.taskmngsys.dto.security.SignInRequest;
 import org.example.taskmngsys.dto.security.SignUpRequest;
 import org.example.taskmngsys.entity.User;
+import org.example.taskmngsys.exception.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,14 +36,25 @@ public class AuthenticationService {
 
 
     public JwtAuthenticationResponse signIn(SignInRequest request) {
+        String username;
+        username = request.getUsername();
+        if (username == null) {
+            User user = userService.getByEmail(request.getEmail());
+            username = user.getUsername();
+        }
+
+        if (username == null) {
+            throw new UserNotFoundException("пользователь");
+        }
+
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getUsername(),
+                username,
                 request.getPassword()
         ));
 
         var user = userService
                 .userDetailsService()
-                .loadUserByUsername(request.getUsername());
+                .loadUserByUsername(username);
 
         var jwt = jwtService.generateToken(user);
         return new JwtAuthenticationResponse(jwt);
