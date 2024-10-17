@@ -1,7 +1,9 @@
 package org.example.taskmngsys.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.example.taskmngsys.emum.Priority;
 import org.example.taskmngsys.emum.Status;
 
@@ -10,6 +12,8 @@ import java.util.List;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(schema = "task_management",name = "t_tasks")
 public class Task {
     @Id

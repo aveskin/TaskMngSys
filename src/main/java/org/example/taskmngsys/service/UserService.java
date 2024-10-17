@@ -16,19 +16,19 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
 
     public User save(User user) {
-        return repository.save(user);
+        return userRepository.save(user);
     }
 
 
     public User create(User user) {
-        if (repository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByUsername(user.getUsername())) {
             throw new UserExistException(user.getUsername());
         }
-        if (repository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new EmailExistException(user.getEmail());
         }
 
@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public User getByUsername(String username) {
-        return repository.findByUsername(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
     }
@@ -53,7 +53,7 @@ public class UserService {
 
 
     public User getByEmail(@Email(message = "Email адрес должен быть в формате user@example.com") String email) {
-        return repository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotExistException(email));
     }
 }
