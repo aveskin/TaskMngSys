@@ -1,5 +1,6 @@
 package org.example.taskmngsys.service;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.example.taskmngsys.dto.user.task.NewTaskRequest;
 import org.example.taskmngsys.dto.user.task.UpdateTaskRequest;
@@ -90,5 +91,13 @@ public class TaskService {
         User executor = executorOptional.orElseThrow(() -> new UserNotFoundException("исполнитель " + executorName));
         task.setExecutor(executor);
         taskRepository.save(task);
+    }
+
+    public Optional<Task> findByTaskId(Integer taskId) {
+        return taskRepository.findById(taskId);
+    }
+
+    public Optional<Task> findByUserIdAndTaskIdWhereUserExecutor(Integer userId, Integer taskId) {
+        return taskRepository.findByUserIdAndTaskIdWhereUserExecutor(userId,taskId);
     }
 }

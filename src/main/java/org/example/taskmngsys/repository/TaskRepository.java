@@ -17,4 +17,7 @@ public interface TaskRepository  extends JpaRepository<Task, Integer> {
 
     @Query("SELECT t FROM Task t WHERE t.author.id = :userId AND t.id = :taskId")
     Optional<Task> findByUserIdAndTaskId(@Param("userId") Integer userId, @Param("taskId") Integer taskId);
+
+    @Query("SELECT t FROM Task t WHERE t.executor.id = :userId AND t.id = :taskId")
+    Optional<Task> findByUserIdAndTaskIdWhereUserExecutor(Integer userId, Integer taskId);
 }

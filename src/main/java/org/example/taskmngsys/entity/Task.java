@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.example.taskmngsys.emum.Priority;
 import org.example.taskmngsys.emum.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -14,8 +15,19 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(schema = "task_management",name = "t_tasks")
+@Table(schema = "task_management", name = "t_tasks")
 public class Task {
+
+    public Task(Integer id, String header, String description, Status status, Priority priority, User author, User executor) {
+        this.id = id;
+        this.header = header;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.author = author;
+        this.executor = executor;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -42,7 +54,6 @@ public class Task {
     @JoinColumn(name = "executor_id", nullable = false)
     private User executor;
 
-//    @OneToMany
-//    @JoinColumn(name = "comment_id", nullable = false)
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 }
